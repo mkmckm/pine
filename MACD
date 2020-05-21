@@ -27,3 +27,23 @@ hist = macd - signal
 plot(hist, title="Histogram", style=plot.style_columns, color=(hist>=0 ? (hist[1] < hist ? col_grow_above : col_fall_above) : (hist[1] < hist ? col_grow_below : col_fall_below) ), transp=0 )
 plot(macd, title="MACD", color=col_macd, transp=0)
 plot(signal, title="Signal", color=col_signal, transp=0)
+-----
+
+STRATEGY
+
+//@version=4
+strategy("MACD Strategy", overlay=true)
+
+fastLength = input(12)
+slowlength = input(26)
+MACDLength = input(9)
+
+MACD = ema(close, fastLength) - ema(close, slowlength)
+signal = ema(MACD, MACDLength)
+delta = MACD - aMACD
+
+if (crossover(delta, 0))
+    strategy.entry("MacdLE", strategy.long, comment="MacdLE")
+
+if (crossunder(delta, 0))
+    strategy.entry("MacdSE", strategy.short, comment="MacdSE")
